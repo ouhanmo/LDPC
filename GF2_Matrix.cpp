@@ -11,18 +11,24 @@ Hanmo Ou 14/6/19
 using namespace std;
 
 GF2_Matrix::GF2_Matrix(){
+    //cout << "Construct Default"  << endl;
     _matrix = 0;
+    _nRow   = 0;
+    _nCol   = 0;
 }
 
 GF2_Matrix::GF2_Matrix(unsigned nRow, unsigned nCol){
+    //cout << "Construct Zero" << nRow << " " << nCol << endl; 
     _nRow = nRow;
     _nCol = nCol;
     allocate_matrix();
 }
 
 GF2_Matrix::GF2_Matrix(istream& is){
+    
     is >> _nRow;
     is >> _nCol;
+    //cout << "Construct File" << _nRow << " " << _nCol << endl;
     allocate_matrix();
     for(unsigned  r = 0; r < _nRow ; r++){
         for(unsigned c = 0; c < _nCol; c++){
@@ -31,7 +37,8 @@ GF2_Matrix::GF2_Matrix(istream& is){
     }
 }
 
-GF2_Matrix::GF2_Matrix(GF2_Matrix& cp){
+GF2_Matrix::GF2_Matrix(const GF2_Matrix& cp){
+    //cout << "Copy" << endl;
     _nCol = cp._nCol;
     _nRow = cp._nRow;
     allocate_matrix();
@@ -43,11 +50,13 @@ GF2_Matrix::GF2_Matrix(GF2_Matrix& cp){
 }
 
 GF2_Matrix::~GF2_Matrix(){
+    //cout << "DESTRUCT:" << _nRow << " " << _nCol << endl;
     reset();
 }
 
 GF2_Matrix&
 GF2_Matrix::operator=(const GF2_Matrix& rhs){
+    //cout << "Assign" << endl;
     reset();
     _nCol = rhs._nCol;
     _nRow = rhs._nRow;
@@ -78,6 +87,7 @@ GF2_Matrix::operator*(const GF2_Matrix& m2){
 
 void
 GF2_Matrix::allocate_matrix(){
+    //cout << "Allocate " << _nRow << "  " << _nCol << endl;
     _matrix = new bool*[_nRow];
     for(unsigned i = 0; i < _nRow; i++){
         _matrix[i] = new bool[_nCol] ; 
@@ -87,6 +97,7 @@ GF2_Matrix::allocate_matrix(){
             _matrix[i][j] = 0;
         } 
     }
+    //cout << "Allocated: " << _matrix << endl;
 
 }
 
@@ -128,16 +139,18 @@ GF2_Matrix::get_generator() const {
         g._matrix[i][i] = 1;
     }
     for(unsigned i = 0; i < _nRow; i++){
-        for(unsigned j = 0; j < _nCol; j++){
+        for(unsigned j = 0; j < _nCol - _nRow; j++){
             g._matrix[i + _nCol - _nRow][j] = _matrix[i][j];
         }
     }
-
+    //cout << "Finished Generator" << endl;
+    // g.print();
     return g;
 }
 
 void 
 GF2_Matrix::print() const {
+    // return;
     for(unsigned r = 0; r < _nRow; r++){
         for(unsigned c = 0; c < _nCol; c++){
             cout << _matrix[r][c] << " ";
@@ -182,12 +195,16 @@ GF2_Matrix::transpose() const{
 
 void 
 GF2_Matrix::reset(){
-    if (_matrix == 0){
+    if (!_matrix){
         return;
     }
+    //cout << "Reset1" << endl;
+    //cout << _nRow << endl;
     for(unsigned i = 0; i < _nRow; i++){
-        delete [] _matrix[i] ; 
+        //cout <<  _matrix[i]  << endl;
+        if (_matrix[i] != 0) delete [] _matrix[i] ; 
     }
+    //cout << "Reset2" << endl;
     delete [] _matrix;
     _matrix = 0;
 }

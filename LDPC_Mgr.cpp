@@ -21,6 +21,7 @@ LDPC_Mgr::LDPC_Mgr(istream& is){
 	cout << "Parity Check Matrix H:" << endl;
 	_checkMatrix.print();
 	_checkMatrix.calc_generator();
+	_generateMatrix.print();
 	_generateMatrix = _checkMatrix.get_generator();
 	cout << "Genertor Matirx G:" << endl;
 	_generateMatrix.print();
@@ -57,13 +58,14 @@ LDPC_Mgr::decode(istream& is, ostream& os){
 	GF2_Matrix input(is);
 	assert(input.col() == _checkMatrix.col());
 	GF2_Matrix output(input.row(), _k);
-
-	const float hard_value = 100;
+	const float hard_value = 10.5;
 	float* bitL = new float[_n];
 	float* bitLi = new float[_n];
 	float* checkL = new float[_n - _k];
+	cout << _bcTable.size() << endl;
 	// for each line of coded bits
 	for(unsigned line = 0; line < input.row(); line++){
+		cout << "Decoding Line: " << line + 1 << endl;
 		// initialize Ls
 		for(unsigned i = 0; i < input.col(); i++){
 			if (input.getValue(line,i)){
@@ -76,12 +78,12 @@ LDPC_Mgr::decode(istream& is, ostream& os){
 			}
 		}
 		// Start Iteration
-		const unsigned iteration = 100;
-		float decay = 1, alpha = 0.9375;
+		const unsigned iteration = 50;
+		float decay = 1, alpha = 1;
 		for(unsigned iter = 0; iter < iteration; iter++){
 			// initialize_edges();
 			// b->c
-			for(unsigned iB = 0; iB < _k; iB++){
+			for(unsigned iB = 0; iB < _n; iB++){
 				for(IdList::iterator j = _adjB[iB].begin() ; j !=_adjB[iB].end(); j++  ){
 					assert(_bcTable.find(getKey(iB,*j)) != _bcTable.end());
 					_bcTable[getKey(iB,*j)] = bitLi[iB];
@@ -94,7 +96,7 @@ LDPC_Mgr::decode(istream& is, ostream& os){
 				}
 			}
 			// c->b
-			for(unsigned jC = 0; jC < _k; jC++){
+			for(unsigned jC = 0; jC < _n - _k; jC++){
 				for(IdList::iterator i = _adjC[jC].begin() ; i !=_adjC[jC].end(); i++  ){
 					assert(_cbTable.find(getKey(*i,jC)) != _cbTable.end());
 					_cbTable[getKey(*i, jC)] = 100000;
@@ -117,7 +119,7 @@ LDPC_Mgr::decode(istream& is, ostream& os){
 				output.setValue(line, i , 1);
 			}
 			else {
-				output.setValue(line, i , 0);
+				output.setValue(line, i , 0);  
 			}
 		}
 		

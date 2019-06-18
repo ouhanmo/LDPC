@@ -12,7 +12,5 @@ int main(int argc, char** argv){
 	ofstream ofs(argv[3]);
 	LDPC_Mgr mgr(ifs);
 	mgr.encode(ifs2, ofs);
-
-
 	return 0;
 }

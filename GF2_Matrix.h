@@ -14,7 +14,7 @@ public:
 	// Constructor and Destructor
 	GF2_Matrix(); // default
 	GF2_Matrix(unsigned, unsigned); // zero
-	GF2_Matrix(GF2_Matrix&); // copy 
+	GF2_Matrix(const GF2_Matrix&); // copy 
 	GF2_Matrix(istream&); // input
 	~GF2_Matrix(); 
 	
