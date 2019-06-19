@@ -1,3 +1,7 @@
+/*
+Comm Lab Final Project
+Hanmo Ou 19/6/19
+*/
 #include <iostream>
 #include <fstream>
 
