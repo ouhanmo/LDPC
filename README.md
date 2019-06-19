@@ -6,6 +6,6 @@ This is our final project for Communications Lab at National Taiwan University
 'make all' to compile
 
 Encoding:
-    encode <Parity Check> <Input> <Output>
+>    encode <Parity Check> <Input> <Output>
 Decoding:
-    decode <Parity Check> <Input> <Output>
+>    decode <Parity Check> <Input> <Output>
